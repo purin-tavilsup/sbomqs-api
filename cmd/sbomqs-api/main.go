@@ -2,21 +2,25 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"github.com/purin-tavilsup/sbomqs-api/internal/handler"
+	"log"
 )
 
 func main() {
-	server := gin.Default()
+	log.Println("Starting server listening on port 5050...")
 
-	server.GET("/_health", getHealth)
+	router := gin.Default()
 
-	err := server.Run(":5050")
+	handler.AddHandler(&handler.Config{
+		Route: router,
+	})
+
+	err := router.Run(":5050")
 
 	if err != nil {
+		log.Println("An error occurred while running the server.")
 		return
 	}
-}
 
-func getHealth(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"message": "Healthy"})
+	log.Println("Shutting down server...")
 }
